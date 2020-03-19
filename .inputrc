@@ -1,0 +1,6 @@
+set completion-ignore-case On
+set editing-mode vi
+set keymap vi-insert
+"df": "\e"
+"jk": "\e"
+
