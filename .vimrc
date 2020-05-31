@@ -16,13 +16,15 @@ Plug 'tpope/vim-abolish'
 Plug 'tpope/vim-repeat'
 Plug 'inkarkat/vim-ingo-library'
 Plug 'inkarkat/vim-mark'
+Plug 'hashivim/vim-terraform'
 if executable( 'cmake' )
    Plug 'vhdirk/vim-cmake'
 endif
 Plug 'neoclide/coc.nvim', { 'branch': 'release' }  
-"Plug 'weirongxu/coc-explorer', {'do': 'yarn install --frozen-lockfile'} 
 
 call plug#end()
+
+packadd termdebug
 
 filetype plugin indent on
 
@@ -76,6 +78,17 @@ if has('gui_running')
    else
       set guifont=
    endif
+endif
+
+"Ugly work-around for not having +clipboard compiled in 
+if !has('clipboard')
+    "Wayland clipboard
+    if executable( 'wl-copy' )
+        xnoremap "+y y:call system("wl-copy", @")<cr>
+        nnoremap "+yy yy:call system("wl-copy", @")<cr>
+        nnoremap "+p :let @"=substitute(system("wl-paste --no-newline"), '<C-v><C-m>', '', 'g')<cr>p
+        nnoremap "*p :let @"=substitute(system("wl-paste --no-newline --primary"), '<C-v><C-m>', '', 'g')<cr>p
+    endif
 endif
 
 " Make window navigation easier. Especially important in neovim to avoid getting
@@ -155,7 +168,7 @@ let g:ctrlp_max_files=0
 let g:ctrlp_match_window = 'max:10,results:60'
 let g:ctrlp_types = [ 'buf', 'mru' ]
 
-nnoremap <C-m> :FZF<cr>
+nnoremap <C-,> :FZF<cr>
 
 set tags=./tags;
 
