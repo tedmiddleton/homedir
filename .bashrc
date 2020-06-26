@@ -17,15 +17,15 @@ HISTFILESIZE=2000
 # User specific aliases and functions
 
 # User specific environment
-#if ! [[ "$PATH" =~ "$HOME/.local/bin" ]]; then
-#    export PATH="$HOME/.local/bin:$PATH"
-#fi
+if ! [[ "$PATH" =~ "$HOME/.local/bin" ]]; then
+    export PATH="$HOME/.local/bin:$PATH"
+fi
 #if ! [[ "$PATH" =~ "$HOME/bin" ]]; then
 #    export PATH="$HOME/bin:$PATH"
 #fi
-#if ! [[ "$PATH" =~ "$HOME/.cargo/bin" ]]; then
-#    export PATH="$HOME/.cargo/bin:$PATH"
-#fi
+if ! [[ "$PATH" =~ "$HOME/.cargo/bin" ]]; then
+    export PATH="$HOME/.cargo/bin:$PATH"
+fi
 
 export GOPATH=$HOME/Dropbox/Projects/go
 
@@ -46,3 +46,5 @@ set -o vi
 fzf_file=/usr/share/fzf/shell/key-bindings.bash
 [[ -f ${fzf_file} ]] && source ${fzf_file}
 
+
+complete -C /home/tedm/.local/bin/terraform terraform
