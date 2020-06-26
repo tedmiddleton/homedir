@@ -39,3 +39,5 @@ set -o vi
 fzf_file=/usr/share/fzf/shell/key-bindings.bash
 [[ -f ${fzf_file} ]] && source ${fzf_file}
 
+
+complete -C /home/tedm/.local/bin/terraform terraform
