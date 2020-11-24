@@ -2,24 +2,22 @@ set nomodeline
 
 :let mapleader = ","
 
+
 call plug#begin('~/.vim/plugged')
 
+"Note - the following are two different plugins (!!!)
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
 Plug 'scrooloose/nerdtree'
 Plug 'majutsushi/tagbar'
 Plug 'derekwyatt/vim-fswitch'
 Plug 'lifepillar/vim-solarized8'
-Plug 'ctrlpvim/ctrlp.vim'
 Plug 'rust-lang/rust.vim'
-Plug 'jnwhiteh/vim-golang'
-Plug 'junegunn/fzf'
 Plug 'tpope/vim-abolish'
 Plug 'tpope/vim-repeat'
 Plug 'inkarkat/vim-ingo-library'
 Plug 'inkarkat/vim-mark'
 Plug 'hashivim/vim-terraform'
-if executable( 'cmake' )
-   Plug 'vhdirk/vim-cmake'
-endif
 Plug 'neoclide/coc.nvim', { 'branch': 'release' }  
 
 call plug#end()
@@ -29,7 +27,9 @@ packadd termdebug
 filetype plugin indent on
 
 set mouse=a
+if !has('nvim')
 set ttymouse=sgr
+endif
 set softtabstop=4
 set shiftwidth=4
 set expandtab
@@ -99,17 +99,18 @@ nnoremap <C-l> <C-w>l
 nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-h> <C-w>h
-if has('nvim')
-   tnoremap <C-l> <C-\><C-n><C-w><C-l>
-   tnoremap <C-j> <C-\><C-n><C-w><C-j>
-   tnoremap <C-k> <C-\><C-n><C-w><C-k>
-   tnoremap <C-h> <C-\><C-n><C-w><C-h>
-else
-   tnoremap <C-l> <C-w><C-l>
-   tnoremap <C-j> <C-w><C-j>
-   tnoremap <C-k> <C-w><C-k>
-   tnoremap <C-h> <C-w><C-h>
-endif
+" Can't do this anymore because it interferes with the fzf terminal window
+"if has('nvim')
+"   tnoremap <C-l> <C-\><C-n><C-w><C-l>
+"   tnoremap <C-j> <C-\><C-n><C-w><C-j>
+"   tnoremap <C-k> <C-\><C-n><C-w><C-k>
+"   tnoremap <C-h> <C-\><C-n><C-w><C-h>
+"else
+"   tnoremap <C-l> <C-w><C-l>
+"   tnoremap <C-j> <C-w><C-j>
+"   tnoremap <C-k> <C-w><C-k>
+"   tnoremap <C-h> <C-w><C-h>
+"endif
 inoremap <C-l> <ESC><C-w>l
 inoremap <C-j> <ESC><C-w>j
 inoremap <C-k> <ESC><C-w>k
@@ -153,7 +154,8 @@ else
   imap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 endif
 
-" Use `[g` and `]g` to navigate diagnostics
+" Use `[g` and `]g` to navigate diagnostics. 
+" These are the clangd warnings, for example.
 nmap <silent> [g <Plug>(coc-diagnostic-prev)
 nmap <silent> ]g <Plug>(coc-diagnostic-next)
 
@@ -254,6 +256,8 @@ nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
 
 "Map Ctrl-N to start NERDTree
 nnoremap <C-n> :NERDTreeToggle<CR>
+nnoremap :ntc :NERDTreeCWD<CR>
+nnoremap :ntf :NERDTreeFind<CR>
 "nnoremap <C-n> :CocCommand explorer<CR>
 
 "Quit if only NERDTree is open
@@ -262,13 +266,11 @@ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isT
 "Map F8 to Tagbar
 nnoremap <F8> :TagbarToggle<CR>
 
-"Various ctrlp.vim settings
-let g:ctrlp_extensions = ['quickfix']
-let g:ctrlp_max_files=0
-let g:ctrlp_match_window = 'max:10,results:60'
-let g:ctrlp_types = [ 'buf', 'mru' ]
-
-nnoremap <C-,> :FZF<cr>
+"Some FZF remappings
+nnoremap <C-p> :History<CR>
+nnoremap <C-m> :FZF<cr>
+nnoremap <C-y> :Buffers<cr>
+nnoremap <C-k> :Ag<cr>
 
 set tags=./tags;
 
