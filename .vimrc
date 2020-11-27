@@ -270,7 +270,7 @@ nnoremap <F8> :TagbarToggle<CR>
 nnoremap <C-p> :History<CR>
 nnoremap <C-m> :FZF<cr>
 nnoremap <C-y> :Buffers<cr>
-nnoremap <C-k> :Ag<cr>
+nnoremap <C-x> :Ag<cr>
 
 set tags=./tags;
 
