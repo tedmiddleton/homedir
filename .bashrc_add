@@ -36,8 +36,14 @@ alias less='less -R'
 
 # .inputrc will do this, but later, and key-bindings.bash depends on this
 set -o vi
+# First the Fedora/Red Hat way of doing things
 fzf_file=/usr/share/fzf/shell/key-bindings.bash
 [[ -f ${fzf_file} ]] && source ${fzf_file}
 
+# Now the Debian way of doing things
+fzf_file=/usr/share/doc/fzf/examples/key-bindings.bash
+[[ -f ${fzf_file} ]] && source ${fzf_file}
+fzf_file=/usr/share/doc/fzf/examples/completion.bash
+[[ -f ${fzf_file} ]] && source ${fzf_file}
 
 complete -C /home/tedm/.local/bin/terraform terraform
