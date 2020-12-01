@@ -267,10 +267,10 @@ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isT
 nnoremap <F8> :TagbarToggle<CR>
 
 "Some FZF remappings
-nnoremap <C-p> :History<CR>
+nnoremap <C-y> :History<CR>
 nnoremap <C-m> :FZF<cr>
-nnoremap <C-y> :Buffers<cr>
-nnoremap <C-x> :Ag<cr>
+nnoremap <C-x> :Buffers<cr>
+nnoremap <C-p> :Ag<cr>
 
 set tags=./tags;
 
