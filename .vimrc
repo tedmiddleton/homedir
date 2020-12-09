@@ -41,6 +41,7 @@ set autoindent
 set incsearch
 set ruler
 set textwidth=80
+set history=1000
 "coc.nvim wants this for displaying messages
 "set cmdheight=2
 "Recognize numbered lists
