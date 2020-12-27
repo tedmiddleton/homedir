@@ -1,4 +1,7 @@
-# source this file
+# source this file with
+#if [[ -f ${HOME}/homedir/.bashrc_add ]]; then
+#    . ${HOME}/homedir/.bashrc_add
+#fi
 
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
