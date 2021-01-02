@@ -13,6 +13,8 @@ Plug 'majutsushi/tagbar'
 Plug 'derekwyatt/vim-fswitch'
 Plug 'lifepillar/vim-solarized8'
 Plug 'rust-lang/rust.vim'
+Plug 'JuliaEditorSupport/julia-vim'
+Plug 'jpalardy/vim-slime'
 Plug 'tpope/vim-abolish'
 Plug 'tpope/vim-repeat'
 Plug 'inkarkat/vim-ingo-library'
@@ -132,16 +134,17 @@ endif
 " Use tab for trigger completion with characters ahead and navigate.
 " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
 " other plugin before putting this into your config.
-inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
-
-function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
+" NOTE - this seems to be mapped by vim-julia
+"inoremap <silent><expr> <TAB>
+"      \ pumvisible() ? "\<C-n>" :
+"      \ <SID>check_back_space() ? "\<TAB>" :
+"      \ coc#refresh()
+"inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+"
+"function! s:check_back_space() abort
+"  let col = col('.') - 1
+"  return !col || getline('.')[col - 1]  =~# '\s'
+"endfunction
 
 " Use <c-space> to trigger completion.
 inoremap <silent><expr> <c-space> coc#refresh()
@@ -257,12 +260,25 @@ nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
 
 "Map Ctrl-N to start NERDTree
 nnoremap <C-n> :NERDTreeToggle<CR>
-nnoremap :ntc :NERDTreeCWD<CR>
-nnoremap :ntf :NERDTreeFind<CR>
 "nnoremap <C-n> :CocCommand explorer<CR>
 
 "Quit if only NERDTree is open
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+
+"Vim slime
+let g:slime_target = "tmux"
+let g:slime_cell_delimiter = "#%%"
+let g:slime_no_mappings = 1
+"These need to be xmap/nmap because the author of vim-slime made the interface a 
+" mapping, so xnoremap/nnoremap doesn't work properly.
+"xmap <C-c><C-c> <Plug>SlimeRegionSend<CR>
+"nmap <C-c><C-c> <Plug>SlimeParagraphSend
+"nmap <C-c>v <Plug>SlimeConfig<CR>
+"nmap <leader>s <Plug>SlimeSendCell<CR>
+xnoremap <C-c><C-c> :call slime#send_op(visualmode(), 1)<cr>
+nnoremap <C-c><C-c> :call slime#store_curpos()<cr>:set opfunc=slime#send_op<cr>g@ip
+nnoremap <C-c>v :call slime#config()<cr>
+nnoremap <leader>s :call slime#send_cell()<cr>
 
 "Map F8 to Tagbar
 nnoremap <F8> :TagbarToggle<CR>
@@ -314,8 +330,8 @@ vnoremap df <esc>
 cnoremap df <C-c>
 
 "Make it easy to open .vimrc
-nnoremap <leader>ev :split $MYVIMRC<cr>
-nnoremap <leader>wv :split $MYVIMRC<cr>
+nnoremap <leader>ev :rightbelow vsplit $MYVIMRC<cr>
+nnoremap <leader>wv :rightbelow vsplit $MYVIMRC<cr>
 nnoremap <leader>sv :source $MYVIMRC<cr>
 
 
