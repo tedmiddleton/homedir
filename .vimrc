@@ -271,14 +271,14 @@ let g:slime_cell_delimiter = "#%%"
 let g:slime_no_mappings = 1
 "These need to be xmap/nmap because the author of vim-slime made the interface a 
 " mapping, so xnoremap/nnoremap doesn't work properly.
-"xmap <C-c><C-c> <Plug>SlimeRegionSend<CR>
-"nmap <C-c><C-c> <Plug>SlimeParagraphSend
-"nmap <C-c>v <Plug>SlimeConfig<CR>
-"nmap <leader>s <Plug>SlimeSendCell<CR>
-xnoremap <C-c><C-c> :call slime#send_op(visualmode(), 1)<cr>
-nnoremap <C-c><C-c> :call slime#store_curpos()<cr>:set opfunc=slime#send_op<cr>g@ip
-nnoremap <C-c>v :call slime#config()<cr>
-nnoremap <leader>s :call slime#send_cell()<cr>
+xmap <C-c><C-c> <Plug>SlimeRegionSend
+nmap <C-c><C-c> <Plug>SlimeParagraphSend
+nmap <C-c>v <Plug>SlimeConfig<CR>
+nmap <leader>s <Plug>SlimeSendCell
+"xnoremap <C-c><C-c> :call slime#send_op(visualmode(), 1)<cr>
+"nnoremap <C-c><C-c> :call slime#store_curpos()<cr>:set opfunc=slime#send_op<cr>g@ip
+"nnoremap <C-c>v :call slime#config()<cr>
+"nnoremap <leader>s :call slime#send_cell()<cr>
 
 "Map F8 to Tagbar
 nnoremap <F8> :TagbarToggle<CR>
