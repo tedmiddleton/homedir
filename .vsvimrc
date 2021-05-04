@@ -1,0 +1,46 @@
+set nomodeline
+
+:let mapleader = ","
+
+set softtabstop=4
+set shiftwidth=4
+set expandtab
+set number
+set ignorecase
+set smartcase
+set autoindent
+set incsearch
+set textwidth=80
+set history=1000
+set nowrapscan
+set clipboard=unnamed
+"Syntax highlighting
+let g:pyindent_open_paren = "&sw"
+
+nnoremap <C-l> <C-w>l
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-h> <C-w>h
+
+inoremap <C-l> <ESC><C-w>l
+inoremap <C-j> <ESC><C-w>j
+inoremap <C-k> <ESC><C-w>k
+inoremap <C-h> <ESC><C-w>h
+
+"Make various things into an escape - escape is too hard to press, as is the
+"awful <C-[>
+"inoremap <C-c> <esc>
+"noremap <C-c> <nop>
+nnoremap df <esc>
+inoremap df <esc>
+vnoremap df <esc>
+cnoremap df <C-c>
+
+"Make it easy to open .vimrc
+nnoremap <leader>ev :rightbelow vsplit $MYVIMRC<cr>
+nnoremap <leader>wv :rightbelow vsplit $MYVIMRC<cr>
+nnoremap <leader>sv :source $MYVIMRC<cr>
+
+
+
+
