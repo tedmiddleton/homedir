@@ -36,6 +36,7 @@ alias rm='rm -i'
 alias grep='grep --color'
 alias grepc='grep --color=always'
 alias less='less -R'
+alias bc='bc -l'
 
 # .inputrc will do this, but later, and key-bindings.bash depends on this
 set -o vi
@@ -50,3 +51,8 @@ fzf_file=/usr/share/doc/fzf/examples/completion.bash
 [[ -f ${fzf_file} ]] && source ${fzf_file}
 
 complete -C /home/tedm/.local/bin/terraform terraform
+
+# This is here so that x11 apps get the same good keyboard remapping as 
+# civilized parts of the OS
+setxkbmap -layout us -option ctrl:nocaps
+
