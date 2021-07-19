@@ -54,5 +54,7 @@ complete -C /home/tedm/.local/bin/terraform terraform
 
 # This is here so that x11 apps get the same good keyboard remapping as 
 # civilized parts of the OS
-setxkbmap -layout us -option ctrl:nocaps
+if command setxkbmap &> /dev/null; then
+    setxkbmap -layout us -option ctrl:nocaps
+fi
 
