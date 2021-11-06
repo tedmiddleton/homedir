@@ -31,7 +31,7 @@ export EDITOR=vim
 export VISUAL=vim
 export CLICOLOR=1
 
-alias la='ls -la'
+alias la='ls -laF'
 alias rm='rm -i'
 alias grep='grep --color'
 alias grepc='grep --color=always'
