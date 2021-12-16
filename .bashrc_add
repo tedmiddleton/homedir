@@ -27,8 +27,8 @@ fi
 
 #export GOPATH=$HOME/Dropbox/Projects/go
 
-export EDITOR=vim
-export VISUAL=vim
+export EDITOR=nvim
+export VISUAL=nvim
 export CLICOLOR=1
 
 alias la='ls -laF'
