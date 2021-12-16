@@ -3,7 +3,11 @@ set nomodeline
 :let mapleader = ","
 
 
+if has('nvim')
+call plug#begin(stdpath('data') . '/plugged')
+else
 call plug#begin('~/.vim/plugged')
+endif
 
 "Note - the following are two different plugins (!!!)
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -19,7 +23,9 @@ Plug 'tpope/vim-repeat'
 Plug 'inkarkat/vim-ingo-library'
 Plug 'inkarkat/vim-mark'
 Plug 'hashivim/vim-terraform'
-Plug 'neoclide/coc.nvim', { 'branch': 'release' }  
+"Plug 'neoclide/coc.nvim', { 'branch': 'release' }  
+" wsl ubuntu only has nodejs 10, and coc.nvim wants v12 so just the old one 
+Plug 'neoclide/coc.nvim', { 'tag': 'v0.0.72' }  
 
 call plug#end()
 
