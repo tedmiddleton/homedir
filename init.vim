@@ -163,28 +163,14 @@ nnoremap <C-l> <C-w>l
 nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-h> <C-w>h
-" Can't do this anymore because it interferes with the fzf terminal window
-"if has('nvim')
-"   tnoremap <C-l> <C-\><C-n><C-w><C-l>
-"   tnoremap <C-j> <C-\><C-n><C-w><C-j>
-"   tnoremap <C-k> <C-\><C-n><C-w><C-k>
-"   tnoremap <C-h> <C-\><C-n><C-w><C-h>
-"else
-"   tnoremap <C-l> <C-w><C-l>
-"   tnoremap <C-j> <C-w><C-j>
-"   tnoremap <C-k> <C-w><C-k>
-"   tnoremap <C-h> <C-w><C-h>
-"endif
 inoremap <C-l> <ESC><C-w>l
 inoremap <C-j> <ESC><C-w>j
 inoremap <C-k> <ESC><C-w>k
 inoremap <C-h> <ESC><C-w>h
 tnoremap <C-w>n <C-w>N
 
-
 "Map Ctrl-N to start NERDTree
 nnoremap <C-n> :NERDTreeToggle<CR>
-"nnoremap <C-n> :CocCommand explorer<CR>
 
 "Quit if only NERDTree is open
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
@@ -257,7 +243,5 @@ cnoremap df <C-c>
 nnoremap <leader>ev :rightbelow vsplit $MYVIMRC<cr>
 nnoremap <leader>wv :rightbelow vsplit $MYVIMRC<cr>
 nnoremap <leader>sv :source $MYVIMRC<cr>
-
-
 
 
