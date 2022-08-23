@@ -25,6 +25,7 @@ Plug 'inkarkat/vim-mark'
 Plug 'hashivim/vim-terraform'
 Plug 'neovim/nvim-lspconfig'
 Plug 'mhinz/vim-startify'
+Plug 'sbdchd/neoformat'
 
 call plug#end()
 
@@ -156,10 +157,6 @@ endif
 
 " Make window navigation easier. Especially important in neovim to avoid getting
 " trapped in a terminal window.
-nnoremap <C-l> <C-w>l
-nnoremap <C-j> <C-w>j
-nnoremap <C-k> <C-w>k
-nnoremap <C-h> <C-w>h
 inoremap <C-l> <ESC><C-w>l
 inoremap <C-j> <ESC><C-w>j
 inoremap <C-k> <ESC><C-w>k
@@ -171,6 +168,9 @@ nnoremap <C-n> :NERDTreeToggle<CR>
 
 "Quit if only NERDTree is open
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+
+"Neoformat
+let g:neoformat_enabled_cpp = ['clangformat']
 
 "Vim slime
 let g:slime_target = "tmux"
@@ -186,7 +186,7 @@ nnoremap <F8> :TagbarToggle<CR>
 
 "Some FZF remappings
 nnoremap <C-y> :History<CR>
-nnoremap <C-m> :FZF<cr>
+nnoremap <C-j> :FZF<cr>
 nnoremap <C-x> :Buffers<cr>
 nnoremap <C-p> :Ag<cr>
 
