@@ -13,9 +13,9 @@ set incsearch
 set textwidth=80
 set history=1000
 set nowrapscan
-set clipboard=unnamed
-"Syntax highlighting
-let g:pyindent_open_paren = "&sw"
+
+""" This causes VS to pause-glitch
+"""set clipboard=unnamed
 
 nnoremap <C-l> <C-w>l
 nnoremap <C-j> <C-w>j
@@ -31,6 +31,7 @@ inoremap <C-h> <ESC><C-w>h
 "awful <C-[>
 "inoremap <C-c> <esc>
 "noremap <C-c> <nop>
+
 nnoremap df <esc>
 inoremap df <esc>
 vnoremap df <esc>
@@ -40,7 +41,3 @@ cnoremap df <C-c>
 nnoremap <leader>ev :rightbelow vsplit $MYVIMRC<cr>
 nnoremap <leader>wv :rightbelow vsplit $MYVIMRC<cr>
 nnoremap <leader>sv :source $MYVIMRC<cr>
-
-
-
-
