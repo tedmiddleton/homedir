@@ -13,12 +13,18 @@ Set-PSReadLineKeyHandler -Key d -ViMode Insert -ScriptBlock {
 Set-PSReadLineKeyHandler -Key f -ViMode Insert -ScriptBlock {
     if (!$j_timer.IsRunning -or $j_timer.ElapsedMilliseconds -gt 1000) {
         [Microsoft.PowerShell.PSConsoleReadLine]::Insert("f")
-    } else {
-        [Microsoft.PowerShell.PSConsoleReadLine]::ViCommandMode()
+    } 
+    else {
         $line = $null
         $cursor = $null
         [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$cursor)
-        [Microsoft.PowerShell.PSConsoleReadLine]::Delete($cursor, 1)
-        [Microsoft.PowerShell.PSConsoleReadLine]::SetCursorPosition($cursor-1)
+        if ($line[-1] -eq 'd') {
+            [Microsoft.PowerShell.PSConsoleReadLine]::Delete($cursor-1, 1)
+            [Microsoft.PowerShell.PSConsoleReadLine]::SetCursorPosition($cursor-1)
+            [Microsoft.PowerShell.PSConsoleReadLine]::ViCommandMode()
+        }
+        else {
+            [Microsoft.PowerShell.PSConsoleReadLine]::Insert("f")
+        }
     }
 }
