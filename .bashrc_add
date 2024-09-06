@@ -50,11 +50,9 @@ fzf_file=/usr/share/doc/fzf/examples/key-bindings.bash
 fzf_file=/usr/share/doc/fzf/examples/completion.bash
 [[ -f ${fzf_file} ]] && source ${fzf_file}
 
-complete -C /home/tedm/.local/bin/terraform terraform
-
 # This is here so that x11 apps get the same good keyboard remapping as 
 # civilized parts of the OS
-if command setxkbmap &> /dev/null; then
-    setxkbmap -layout us -option ctrl:nocaps
-fi
+#if command setxkbmap &> /dev/null; then
+#    setxkbmap -layout us -option ctrl:nocaps
+#fi
 
