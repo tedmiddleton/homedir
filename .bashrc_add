@@ -1,5 +1,5 @@
 # source this file with
-#if [[ -f ${HOME}/homedir/.bashrc_add ]]; then
+#if [ -f ${HOME}/homedir/.bashrc_add ]; then
 #    . ${HOME}/homedir/.bashrc_add
 #fi
 
@@ -49,13 +49,13 @@ alias bc='bc -l'
 set -o vi
 # First the Fedora/Red Hat way of doing things
 fzf_file=/usr/share/fzf/shell/key-bindings.bash
-[[ -f ${fzf_file} ]] && source ${fzf_file}
+[ -f ${fzf_file} ] && source ${fzf_file}
 
 # Now the Debian way of doing things
 fzf_file=/usr/share/doc/fzf/examples/key-bindings.bash
-[[ -f ${fzf_file} ]] && source ${fzf_file}
+[ -f ${fzf_file} ] && source ${fzf_file}
 fzf_file=/usr/share/doc/fzf/examples/completion.bash
-[[ -f ${fzf_file} ]] && source ${fzf_file}
+[ -f ${fzf_file} ] && source ${fzf_file}
 
 # This is here so that x11 apps get the same good keyboard remapping as 
 # civilized parts of the OS
