@@ -27,6 +27,7 @@ Plug 'neovim/nvim-lspconfig'
 Plug 'mhinz/vim-startify'
 Plug 'sbdchd/neoformat'
 Plug 'p00f/clangd_extensions.nvim'
+Plug 'github/copilot.vim'
 
 call plug#end()
 
@@ -73,6 +74,7 @@ local on_attach = function(client, bufnr)
   -- beginning of function
   -- end of function
   -- what else?
+  -- class definition - methods and fields
 
 
 end
