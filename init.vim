@@ -195,8 +195,8 @@ nnoremap <F8> :TagbarToggle<CR>
 "Some FZF remappings
 nnoremap <C-y> :History<CR>
 nnoremap <C-j> :FZF<cr>
-nnoremap <C-x> :Buffers<cr>
 nnoremap <C-p> :Ag<cr>
+nnoremap <C-m> :Tags<cr>
 
 set tags=./tags;
 
