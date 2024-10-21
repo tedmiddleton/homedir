@@ -28,6 +28,7 @@ Plug 'mhinz/vim-startify'
 Plug 'sbdchd/neoformat'
 Plug 'p00f/clangd_extensions.nvim'
 Plug 'github/copilot.vim'
+Plug 'ojroques/nvim-lspfuzzy'
 
 call plug#end()
 
@@ -39,6 +40,7 @@ lua << EOF
 
 require 'lspconfig'.clangd.setup{}
 local nvim_lsp = require 'lspconfig'
+require('lspfuzzy').setup {}
 
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
