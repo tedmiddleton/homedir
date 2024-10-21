@@ -32,8 +32,6 @@ Plug 'ojroques/nvim-lspfuzzy'
 
 call plug#end()
 
-packadd termdebug
-
 " Lua config - into lua-land!
 if has('nvim')
 lua << EOF
@@ -206,12 +204,13 @@ set tags=./tags;
 ".cpp files without it?
 let header_pat = 'reg:|src|inc|,reg:|src|include|,reg:|src|inc/**|,reg:|src|include/**|'
 let source_pat = 'reg:|include|src,reg:|inc|src,reg:|include.*|src|,reg:|inc.*|src|,ifrel:|/include/|../src|,ifrel:|/inc/|../src|'
-au! BufEnter *.cpp let b:fswitchdst = 'hpp,h' | let b:fswitchlocs = header_pat
-au! BufEnter *.c let b:fswitchdst = 'hpp,h' | let b:fswitchlocs = header_pat
-au! BufEnter *.h let b:fswitchdst = 'cpp,c' | let b:fswitchlocs = source_pat
-au! BufEnter *.hpp let b:fswitchdst = 'cpp' | let b:fswitchlocs = source_pat
-au! BufEnter *.tin let b:fswitchdst = 'tac' | let b:fswitchlocs = header_pat
-au! BufEnter *.tac let b:fswitchdst = 'tin' | let b:fswitchlocs = source_pat
+au! BufEnter *.cpp let b:fswitchdst = 'hpp,h,hh' | let b:fswitchlocs = header_pat
+au! BufEnter *.cu let b:fswitchdst = 'hpp,h,hh' | let b:fswitchlocs = header_pat
+au! BufEnter *.cc let b:fswitchdst = 'hpp,h,hh' | let b:fswitchlocs = header_pat
+au! BufEnter *.c let b:fswitchdst = 'h' | let b:fswitchlocs = header_pat
+au! BufEnter *.hpp let b:fswitchdst = 'cpp,cc,cu' | let b:fswitchlocs = source_pat
+au! BufEnter *.hh let b:fswitchdst = 'cpp,cc,cu' | let b:fswitchlocs = source_pat
+au! BufEnter *.h let b:fswitchdst = 'cpp,c,cc,cu' | let b:fswitchlocs = source_pat
 
 nnoremap <C-a> :FSHere<cr>
 
