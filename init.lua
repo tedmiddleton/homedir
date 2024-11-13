@@ -1,33 +1,36 @@
 vim.g.mapleader = ","
 
-require('packer').startup(function(use)
--- Packer can manage itself
-use 'wbthomason/packer.nvim'
+require('packer').startup(
+  function(use)
 
--- Example plugins
---use 'tpope/vim-sensible'                -- Example basic Vim settings
-use { 'junegunn/fzf', run = 'fzf#install()' }  -- Fuzzy Finder
-use 'junegunn/fzf.vim'                    -- FZF Vim integration
-use 'preservim/nerdtree'                  -- File tree explorer
-use 'majutsushi/tagbar'
-use 'derekwyatt/vim-fswitch'
-use 'lifepillar/vim-solarized8'
-use 'rust-lang/rust.vim'
-use 'JuliaEditorSupport/julia-vim'
-use 'jpalardy/vim-slime'
-use 'tpope/vim-repeat'
-use 'inkarkat/vim-ingo-library'
-use 'inkarkat/vim-mark'
-use 'hashivim/vim-terraform'
-use 'neovim/nvim-lspconfig'
-use 'mhinz/vim-startify'
-use 'sbdchd/neoformat'
-use 'p00f/clangd_extensions.nvim'
-use 'github/copilot.vim'
-use 'ojroques/nvim-lspfuzzy'
+    -- Packer can manage itself
+    use 'wbthomason/packer.nvim'
 
--- Add other plugins as you like
-end)
+    -- Example plugins
+    --use 'tpope/vim-sensible'                -- Example basic Vim settings
+    use { 'junegunn/fzf', run = 'fzf#install()' }  -- Fuzzy Finder
+    use 'junegunn/fzf.vim'                    -- FZF Vim integration
+    use 'preservim/nerdtree'                  -- File tree explorer
+    use 'majutsushi/tagbar'
+    use 'derekwyatt/vim-fswitch'
+    use 'lifepillar/vim-solarized8'
+    use 'rust-lang/rust.vim'
+    use 'JuliaEditorSupport/julia-vim'
+    use 'jpalardy/vim-slime'
+    use 'tpope/vim-repeat'
+    use 'inkarkat/vim-ingo-library'
+    use 'inkarkat/vim-mark'
+    use 'hashivim/vim-terraform'
+    use 'neovim/nvim-lspconfig'
+    use 'mhinz/vim-startify'
+    use 'sbdchd/neoformat'
+    use 'p00f/clangd_extensions.nvim'
+    use 'github/copilot.vim'
+    use 'ojroques/nvim-lspfuzzy'
+
+    -- Add other plugins as you like
+  end
+)
 
 require 'lspconfig'.clangd.setup{}
 local nvim_lsp = require 'lspconfig'
