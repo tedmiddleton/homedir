@@ -74,24 +74,36 @@ end
 -- map buffer local keybindings when the language server attaches
 local servers = { 'clangd' }
 for _, lsp in ipairs(servers) do
-nvim_lsp[lsp].setup {
-on_attach = on_attach,
-flags = {
-debounce_text_changes = 150,
-}
-}
+  nvim_lsp[lsp].setup {
+    on_attach = on_attach,
+    flags = {
+      debounce_text_changes = 150,
+    }
+  }
 end
 
---local lsp = vim.lsp
---
---local function get_lsp_root()
---  local clients = lsp.buf_get_clients(0)
---  print(vim.inspect(clients))
---  local root = lsp.buf_get_clients(0)[1].config.root_dir
---  return root
---end
---
---print("LSP root: " .. get_lsp_root())
+local function find_compile_commands()
+  -- Start from the directory of the current file
+  local dir = vim.fn.getcwd()
+
+  --print("Starting the search for compile_commands.json at: " .. dir)
+  while dir ~= "/" do
+    local compile_commands_path = dir .. "/compile_commands.json"
+    --print("Checking for compile_commands.json at: " .. compile_commands_path)
+    if vim.fn.filereadable(compile_commands_path) == 1 then
+      --print("Found compile_commands.json at: " .. compile_commands_path)
+      return compile_commands_path
+    end
+    -- Move up one directory
+    dir = vim.fn.fnamemodify(dir, ":h")
+  end
+
+  --print("compile_commands.json not found.")
+  return nil
+end
+
+-- Run the function to print the path or use it as needed
+local project_root = find_compile_commands()
 
 -- Enable filetype plugins and indent
 vim.cmd("filetype plugin indent on")
@@ -201,7 +213,8 @@ vim.api.nvim_set_keymap("n", "<C-j>", ":FZF<CR>", { noremap = true, silent = tru
 vim.api.nvim_set_keymap("n", "<C-p>", ":Ag<CR>", { noremap = true, silent = true })
 vim.api.nvim_set_keymap("n", "<C-m>", ":Tags<CR>", { noremap = true, silent = true })
 
--- Set tags
+-- Set tags - the last semicolon is important so that vim searches up the 
+-- directory tree
 vim.opt.tags = "./tags;"
 
 -- vim-fswitch settings
@@ -220,7 +233,7 @@ end
 vim.api.nvim_create_autocmd("BufEnter", {
 pattern = "*.cc",
 callback = function()
-vim.b.fswitchdst = "hpp,hh,h"
+vim.b.fswitchdst = "hh,hpp,h"
 vim.b.fswitchlocs = header_pat
 end
 })
@@ -244,7 +257,7 @@ end
 vim.api.nvim_create_autocmd("BufEnter", {
 pattern = "*.hh",
 callback = function()
-vim.b.fswitchdst = "cpp,cc"
+vim.b.fswitchdst = "cc,cpp"
 vim.b.fswitchlocs = source_pat
 end
 })
