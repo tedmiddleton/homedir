@@ -21,15 +21,28 @@ fi
 HISTSIZE=1000
 HISTFILESIZE=2000
 
+pathadd() {
+    if [ -d "$1" ] && [[ ":$PATH:" != *":$1:"* ]]; then
+        export PATH="${PATH:+"$PATH:"}$1"
+    fi
+}
+
+ldlibpathadd() {
+    if [ -d "$1" ] && [[ ":$LD_LIBRARY_PATH:" != *":$1:"* ]]; then
+      echo "Adding $1 to LD_LIBRARY_PATH"
+      export LD_LIBRARY_PATH="${LD_LIBRARY_PATH:+"$LD_LIBRARY_PATH:"}$1"
+    fi
+}
+
 # User specific environment
 if ! [[ "$PATH" =~ "$HOME/.local/bin" ]]; then
-    export PATH="$HOME/.local/bin:$PATH"
+  pathadd "$HOME/.local/bin"
 fi
 if ! [[ "$PATH" =~ "$HOME/bin" ]]; then
-    export PATH="$HOME/bin:$PATH"
+  pathadd "$HOME/bin"
 fi
 if ! [[ "$PATH" =~ "$HOME/.cargo/bin" ]]; then
-    export PATH="$HOME/.cargo/bin:$PATH"
+  pathadd "$HOME/.cargo/bin"
 fi
 
 #export GOPATH=$HOME/Dropbox/Projects/go
@@ -47,6 +60,7 @@ alias bc='bc -l'
 
 # .inputrc will do this, but later, and key-bindings.bash depends on this
 set -o vi
+
 # First the Fedora/Red Hat way of doing things
 fzf_file=/usr/share/fzf/shell/key-bindings.bash
 [ -f ${fzf_file} ] && source ${fzf_file}
