@@ -215,6 +215,8 @@ vim.api.nvim_set_keymap("n", "<C-y>", ":History<CR>", { noremap = true, silent =
 vim.api.nvim_set_keymap("n", "<C-j>", ":FZF<CR>", { noremap = true, silent = true })
 vim.api.nvim_set_keymap("n", "<C-p>", ":Ag<CR>", { noremap = true, silent = true })
 vim.api.nvim_set_keymap("n", "<C-m>", ":Tags<CR>", { noremap = true, silent = true })
+vim.g.fzf_layout = { window = { width = 0.9, height = 0.9 } }
+vim.g.fzf_history_dir = "~/.local/share/nvim/fzf-history"
 
 -- Set tags - the last semicolon is important so that vim searches up the 
 -- directory tree
@@ -250,6 +252,14 @@ end
 })
 
 vim.api.nvim_create_autocmd("BufEnter", {
+pattern = "*.rl",
+callback = function()
+vim.b.fswitchdst = "hh,hpp"
+vim.b.fswitchlocs = header_pat
+end
+})
+
+vim.api.nvim_create_autocmd("BufEnter", {
 pattern = "*.hpp",
 callback = function()
 vim.b.fswitchdst = "cpp,cc"
@@ -260,7 +270,7 @@ end
 vim.api.nvim_create_autocmd("BufEnter", {
 pattern = "*.hh",
 callback = function()
-vim.b.fswitchdst = "cc,cpp"
+vim.b.fswitchdst = "cc,cpp,rl" -- rl is ragel state machine
 vim.b.fswitchlocs = source_pat
 end
 })
