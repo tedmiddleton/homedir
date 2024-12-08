@@ -30,9 +30,9 @@ require('packer').startup(
   end
 )
 
-require('lspconfig').clangd.setup{}
-local nvim_lsp = require 'lspconfig'
+local nvim_lsp = require('lspconfig')
 local FzfLua = require('fzf-lua')
+nvim_lsp.clangd.setup{}
 
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
@@ -238,62 +238,23 @@ local header_pat = 'reg:|src|inc|,reg:|src|include|,reg:|src|inc/**|,reg:|src|in
 local source_pat = 'reg:|include|src,reg:|inc|src,reg:|include.*|src|,reg:|inc.*|src|,ifrel:|/include/|../src|,ifrel:|/inc/|../src|'
 
 -- Define autocmds for fswitch
-vim.api.nvim_create_autocmd("BufEnter", {
-pattern = "*.cpp",
-callback = function()
-  vim.b.fswitchdst = "hpp,hh,h"
-  vim.b.fswitchlocs = header_pat
+local fswitch_autocmd = function(filetype, dst, locs)
+  vim.api.nvim_create_autocmd("BufEnter", {
+    pattern = "*." .. filetype,
+    callback = function()
+      vim.b.fswitchdst = dst
+      vim.b.fswitchlocs = locs
+    end
+  })
 end
-})
 
-vim.api.nvim_create_autocmd("BufEnter", {
-pattern = "*.cc",
-callback = function()
-  vim.b.fswitchdst = "hh,hpp,h"
-  vim.b.fswitchlocs = header_pat
-end
-})
-
-vim.api.nvim_create_autocmd("BufEnter", {
-pattern = "*.c",
-callback = function()
-  vim.b.fswitchdst = "h"
-  vim.b.fswitchlocs = header_pat
-end
-})
-
-vim.api.nvim_create_autocmd("BufEnter", {
-pattern = "*.rl",
-callback = function()
-  vim.b.fswitchdst = "hh,hpp"
-  vim.b.fswitchlocs = header_pat
-end
-})
-
-vim.api.nvim_create_autocmd("BufEnter", {
-pattern = "*.hpp",
-callback = function()
-  vim.b.fswitchdst = "cpp,cc"
-  vim.b.fswitchlocs = source_pat
-end
-})
-
-vim.api.nvim_create_autocmd("BufEnter", {
-pattern = "*.hh",
-callback = function()
-  vim.b.fswitchdst = "cc,cpp,rl" -- rl is ragel state machine
-  vim.b.fswitchlocs = source_pat
-end
-})
-
-vim.api.nvim_create_autocmd("BufEnter", {
-pattern = "*.h",
-callback = function()
-  vim.b.fswitchdst = "cpp,cc,c"
-  vim.b.fswitchlocs = source_pat
-end
-})
-
+fswitch_autocmd("cpp", "hpp,hh,h", header_pat)
+fswitch_autocmd("cc", "hh,hpp,h", header_pat)
+fswitch_autocmd("c", "h", header_pat)
+fswitch_autocmd("rl", "hh,hpp", header_pat)
+fswitch_autocmd("hpp", "cpp,cc", source_pat)
+fswitch_autocmd("hh", "cc,cpp,rl", source_pat)
+fswitch_autocmd("h", "cpp,cc,c", source_pat)
 
 -- Map Ctrl-A to FSHere command
 vim.api.nvim_set_keymap("n", "<C-a>", ":FSHere<CR>", { noremap = true, silent = true })
