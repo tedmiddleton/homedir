@@ -8,8 +8,7 @@ require('packer').startup(
 
     -- Example plugins
     --use 'tpope/vim-sensible'                -- Example basic Vim settings
-    use { 'junegunn/fzf', run = 'fzf#install()' }  -- Fuzzy Finder
-    use 'junegunn/fzf.vim'                    -- FZF Vim integration
+    use 'ibhagwan/fzf-lua'
     use 'preservim/nerdtree'                  -- File tree explorer
     use 'majutsushi/tagbar'
     use 'derekwyatt/vim-fswitch'
@@ -26,51 +25,52 @@ require('packer').startup(
     use 'sbdchd/neoformat'
     use 'p00f/clangd_extensions.nvim'
     use 'github/copilot.vim'
-    use 'ojroques/nvim-lspfuzzy'
 
     -- Add other plugins as you like
   end
 )
 
-require 'lspconfig'.clangd.setup{}
+require('lspconfig').clangd.setup{}
 local nvim_lsp = require 'lspconfig'
-require('lspfuzzy').setup {}
+local FzfLua = require('fzf-lua')
 
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
 local on_attach = function(client, bufnr)
-local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
-local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
 
--- Enable completion triggered by <c-x><c-o>
-buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+  -- Enable completion triggered by <c-x><c-o>
+  vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
 
--- Mappings.
-local opts = { noremap=true, silent=true }
+  -- Mappings.
+  local opts = { buffer=bufnr, noremap=true, silent=true }
 
--- See `:help vim.lsp.*` for documentation on any of the below functions
-buf_set_keymap('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
-buf_set_keymap('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
-buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-buf_set_keymap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
-buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
-buf_set_keymap('n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
-buf_set_keymap('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
-buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
-buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
-buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
-buf_set_keymap('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
-buf_set_keymap('n', '<space>e', '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
-buf_set_keymap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
-buf_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
-buf_set_keymap('n', '<space>q', '<cmd>lua vim.diagnostic.setloclist()<CR>', opts)
-buf_set_keymap('n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
--- TODO
--- beginning of function
--- end of function
--- what else?
--- class definition - methods and fields
+  -- See `:help vim.lsp.*` for documentation on any of the below functions
+
+  --vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opt)
+  vim.keymap.set("n", "gD", FzfLua.lsp_declarations, opt)
+  --vim.keymap.set("n", "gd", vim.lsp.buf.definition, opt)
+  vim.keymap.set("n", "gd", FzfLua.lsp_definitions, opt)
+  --vim.keymap.set("n", "gr", vim.lsp.buf.references, opt)
+  vim.keymap.set("n", "gr", FzfLua.lsp_references, opt)
+  --vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opt)
+  vim.keymap.set("n", "gi", FzfLua.lsp_implementations, opt)
+  vim.keymap.set("n", "K", vim.lsp.buf.hover, opt)
+  vim.keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, opt)
+  vim.keymap.set("n", "<space>D", vim.lsp.buf.type_definition, opt)
+  vim.keymap.set("n", "<space>rn", vim.lsp.buf.rename, opt)
+  --vim.keymap.set("n", "<space>ca", vim.lsp.buf.code_action, opt)
+  vim.keymap.set("n", "<space>ca", FzfLua.lsp_code_actions, opt)
+  vim.keymap.set("n", "<space>e", vim.diagnostic.open_float, opt)
+  vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opt)
+  vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opt)
+  vim.keymap.set("n", "<space>q", vim.diagnostic.setloclist, opt)
+  vim.keymap.set("n", "<space>f", vim.lsp.buf.format, opt)
+
+  -- TODO
+  -- beginning of function
+  -- end of function
+  -- what else?
+  -- class definition - methods and fields
 end
 
 -- Use a loop to conveniently call 'setup' on multiple servers and
@@ -85,17 +85,17 @@ for _, lsp in ipairs(servers) do
   }
 end
 
-local function find_compile_commands()
+local function find_file_in_parent_dirs(filename)
   -- Start from the directory of the current file
   local dir = vim.fn.getcwd()
 
   --print("Starting the search for compile_commands.json at: " .. dir)
   while dir ~= "/" do
-    local compile_commands_path = dir .. "/compile_commands.json"
+    local compile_commands_path = dir .. "/" .. filename
     --print("Checking for compile_commands.json at: " .. compile_commands_path)
     if vim.fn.filereadable(compile_commands_path) == 1 then
       --print("Found compile_commands.json at: " .. compile_commands_path)
-      return compile_commands_path
+      return dir
     end
     -- Move up one directory
     dir = vim.fn.fnamemodify(dir, ":h")
@@ -105,8 +105,25 @@ local function find_compile_commands()
   return nil
 end
 
+local function find_project_root()
+  local compile_commands_path = find_file_in_parent_dirs("compile_commands.json")
+  if compile_commands_path ~= nil then
+    return compile_commands_path
+  end
+
+  -- We couldn't find compile_commands.json in the direct path, so try 
+  -- CMakeLists.txt
+  local cmake_path = find_file_in_parent_dirs("CMakeLists.txt")
+  if cmake_path ~= nil then
+    return cmake_path
+  end
+
+  -- We couldn't find either so we'll just return the current directory
+  return vim.fn.getcwd()
+end
+
 -- Run the function to print the path or use it as needed
-local project_root = find_compile_commands()
+project_root = find_project_root()
 
 -- Enable filetype plugins and indent
 vim.cmd("filetype plugin indent on")
@@ -149,24 +166,14 @@ vim.opt.wrapscan = false
 vim.cmd("syntax enable")
 
 -- Set filetypes for specific extensions
-vim.api.nvim_create_autocmd({"BufNewFile", "BufRead"}, {
-pattern = "*.aj",
-command = "set filetype=java"
-})
-
-vim.api.nvim_create_autocmd({"BufNewFile", "BufRead"}, {
-pattern = "*.rl",
-command = "set filetype=cpp"
-})
-
-vim.api.nvim_create_autocmd({"BufNewFile", "BufRead"}, {
-pattern = "*.cu",
-command = "set filetype=cpp"
-})
-
-vim.api.nvim_create_autocmd({"BufNewFile", "BufRead"}, {
-pattern = "*.ts",
-command = "set filetype=javascript"
+vim.filetype.add({
+  extension = {
+    aj = "java",
+    cu = "cpp",
+    rl = "cpp",
+    ts = "javascript",
+    rs = "rust"
+  }
 })
 
 vim.api.nvim_create_autocmd({"BufNewFile", "BufRead"}, {
@@ -210,13 +217,17 @@ vim.api.nvim_set_keymap("n", "<leader>s", "<Plug>SlimeSendCell", { noremap = tru
 -- Map F8 to Tagbar
 vim.api.nvim_set_keymap("n", "<F8>", ":TagbarToggle<CR>", { noremap = true, silent = true })
 
--- FZF remappings
-vim.api.nvim_set_keymap("n", "<C-y>", ":History<CR>", { noremap = true, silent = true })
-vim.api.nvim_set_keymap("n", "<C-j>", ":FZF<CR>", { noremap = true, silent = true })
-vim.api.nvim_set_keymap("n", "<C-p>", ":Ag<CR>", { noremap = true, silent = true })
-vim.api.nvim_set_keymap("n", "<C-m>", ":Tags<CR>", { noremap = true, silent = true })
-vim.g.fzf_layout = { window = { width = 0.9, height = 0.9 } }
-vim.g.fzf_history_dir = "~/.local/share/nvim/fzf-history"
+-- FZF remappings. Different now.
+vim.keymap.set("n", "<C-y>", FzfLua.oldfiles)
+vim.keymap.set("n", "<C-j>", 
+  function()
+    FzfLua.files({cwd = project_root})
+  end)
+vim.keymap.set("n", "<C-p>", 
+  function()
+    FzfLua.live_grep({cwd = project_root})
+  end)
+vim.keymap.set("n", "<C-m>", FzfLua.lsp_workspace_symbols)
 
 -- Set tags - the last semicolon is important so that vim searches up the 
 -- directory tree
@@ -230,56 +241,56 @@ local source_pat = 'reg:|include|src,reg:|inc|src,reg:|include.*|src|,reg:|inc.*
 vim.api.nvim_create_autocmd("BufEnter", {
 pattern = "*.cpp",
 callback = function()
-vim.b.fswitchdst = "hpp,hh,h"
-vim.b.fswitchlocs = header_pat
+  vim.b.fswitchdst = "hpp,hh,h"
+  vim.b.fswitchlocs = header_pat
 end
 })
 
 vim.api.nvim_create_autocmd("BufEnter", {
 pattern = "*.cc",
 callback = function()
-vim.b.fswitchdst = "hh,hpp,h"
-vim.b.fswitchlocs = header_pat
+  vim.b.fswitchdst = "hh,hpp,h"
+  vim.b.fswitchlocs = header_pat
 end
 })
 
 vim.api.nvim_create_autocmd("BufEnter", {
 pattern = "*.c",
 callback = function()
-vim.b.fswitchdst = "h"
-vim.b.fswitchlocs = header_pat
+  vim.b.fswitchdst = "h"
+  vim.b.fswitchlocs = header_pat
 end
 })
 
 vim.api.nvim_create_autocmd("BufEnter", {
 pattern = "*.rl",
 callback = function()
-vim.b.fswitchdst = "hh,hpp"
-vim.b.fswitchlocs = header_pat
+  vim.b.fswitchdst = "hh,hpp"
+  vim.b.fswitchlocs = header_pat
 end
 })
 
 vim.api.nvim_create_autocmd("BufEnter", {
 pattern = "*.hpp",
 callback = function()
-vim.b.fswitchdst = "cpp,cc"
-vim.b.fswitchlocs = source_pat
+  vim.b.fswitchdst = "cpp,cc"
+  vim.b.fswitchlocs = source_pat
 end
 })
 
 vim.api.nvim_create_autocmd("BufEnter", {
 pattern = "*.hh",
 callback = function()
-vim.b.fswitchdst = "cc,cpp,rl" -- rl is ragel state machine
-vim.b.fswitchlocs = source_pat
+  vim.b.fswitchdst = "cc,cpp,rl" -- rl is ragel state machine
+  vim.b.fswitchlocs = source_pat
 end
 })
 
 vim.api.nvim_create_autocmd("BufEnter", {
 pattern = "*.h",
 callback = function()
-vim.b.fswitchdst = "cpp,cc,c"
-vim.b.fswitchlocs = source_pat
+  vim.b.fswitchdst = "cpp,cc,c"
+  vim.b.fswitchlocs = source_pat
 end
 })
 
