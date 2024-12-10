@@ -218,7 +218,8 @@ vim.api.nvim_set_keymap("n", "<leader>s", "<Plug>SlimeSendCell", { noremap = tru
 vim.api.nvim_set_keymap("n", "<F8>", ":TagbarToggle<CR>", { noremap = true, silent = true })
 
 -- FZF remappings. Different now.
-vim.keymap.set("n", "<C-y>", FzfLua.oldfiles)
+vim.keymap.set("n", "<C-i>", FzfLua.oldfiles)
+vim.keymap.set("n", "<C-y>", FzfLua.buffers)
 vim.keymap.set("n", "<C-j>", 
   function()
     FzfLua.files({cwd = project_root})
