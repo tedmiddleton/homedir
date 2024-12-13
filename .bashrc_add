@@ -1,6 +1,6 @@
 # source this file with
-#if [ -f ${HOME}/homedir/.bashrc_add ]; then
-#    . ${HOME}/homedir/.bashrc_add
+#if [[ -f ${HOME}/homedir/.bashrc_add ]]; then
+#    source ${HOME}/homedir/.bashrc_add
 #fi
 
 export BASH_SILENCE_DEPRECATION_WARNING=1
@@ -10,9 +10,9 @@ export BASH_SILENCE_DEPRECATION_WARNING=1
 HISTCONTROL=ignoreboth
 
 # append to the history file, don't overwrite it
-if [ -n "$BASH_VERSION" ]; then
+if [[ -n "$BASH_VERSION" ]]; then
     shopt -s histappend
-elif [ -n "$ZSH_VERSION" ]; then
+elif [[ -n "$ZSH_VERSION" ]]; then
     # Enable case-insensitive tab completion
     zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
 fi
@@ -22,28 +22,21 @@ HISTSIZE=1000
 HISTFILESIZE=2000
 
 pathadd() {
-    if [ -d "$1" ] && [[ ":$PATH:" != *":$1:"* ]]; then
+    if [[ -d $1 && ! ":$PATH:" =~ ":$1:" ]]; then
         export PATH="${PATH:+"$PATH:"}$1"
     fi
 }
 
 ldlibpathadd() {
-    if [ -d "$1" ] && [[ ":$LD_LIBRARY_PATH:" != *":$1:"* ]]; then
-      echo "Adding $1 to LD_LIBRARY_PATH"
-      export LD_LIBRARY_PATH="${LD_LIBRARY_PATH:+"$LD_LIBRARY_PATH:"}$1"
+    if [[ -d $1 && ! ":$LD_LIBRARY_PATH:" =~ ":$1:" ]]; then
+        export LD_LIBRARY_PATH="${LD_LIBRARY_PATH:+"$LD_LIBRARY_PATH:"}$1"
     fi
 }
 
 # User specific environment
-if ! [[ "$PATH" =~ "$HOME/.local/bin" ]]; then
-  pathadd "$HOME/.local/bin"
-fi
-if ! [[ "$PATH" =~ "$HOME/bin" ]]; then
-  pathadd "$HOME/bin"
-fi
-if ! [[ "$PATH" =~ "$HOME/.cargo/bin" ]]; then
-  pathadd "$HOME/.cargo/bin"
-fi
+pathadd "$HOME/.local/bin"
+pathadd "$HOME/bin"
+pathadd "$HOME/.cargo/bin"
 
 #export GOPATH=$HOME/Dropbox/Projects/go
 
@@ -61,21 +54,24 @@ alias bc='bc -l'
 # .inputrc will do this, but later, and key-bindings.bash depends on this
 set -o vi
 
-# First the Fedora/Red Hat way of doing things
+# Completions (bash, fzf, git, ...)
+
+# Fedora/Red Hat
 fzf_file=/usr/share/fzf/shell/key-bindings.bash
-[ -f ${fzf_file} ] && source ${fzf_file}
+[[ -f ${fzf_file} ]] && source ${fzf_file}
 
-# Now the Debian way of doing things
+# Debian
 fzf_file=/usr/share/doc/fzf/examples/key-bindings.bash
-[ -f ${fzf_file} ] && source ${fzf_file}
+[[ -f ${fzf_file} ]] && source ${fzf_file}
 fzf_file=/usr/share/doc/fzf/examples/completion.bash
-[ -f ${fzf_file} ] && source ${fzf_file}
+[[ -f ${fzf_file} ]] && source ${fzf_file}
 
-# Now the homebrew way of doing things
-fzf_file=/opt/homebrew/Cellar/fzf/*/shell/key-bindings.bash
-[ -f ${fzf_file} ] && source ${fzf_file}
-fzf_file=/opt/homebrew/Cellar/fzf/*/shell/completion.bash
-[ -f ${fzf_file} ] && source ${fzf_file}
+# Homebrew 
+# note - make sure to link fzf files in this dir because brew doesn't do that by 
+# default
+for file in /opt/homebrew/etc/bash_completion.d/*; do
+    [[ -f "$file" ]] && source "$file"
+done
 
 # This is here so that x11 apps get the same good keyboard remapping as 
 # civilized parts of the OS
