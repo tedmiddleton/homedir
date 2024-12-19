@@ -12,6 +12,7 @@ HISTCONTROL=ignoreboth
 # append to the history file, don't overwrite it
 if [[ -n "$BASH_VERSION" ]]; then
     shopt -s histappend
+    shopt -s extglob
 elif [[ -n "$ZSH_VERSION" ]]; then
     # Enable case-insensitive tab completion
     zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
