@@ -51,6 +51,8 @@ export EDITOR=nvim
 export VISUAL=nvim
 export CLICOLOR=1
 
+export PYTHON_BASIC_REPL=1
+
 alias la='ls -laF'
 alias rm='rm -i'
 alias grep='grep --color'
