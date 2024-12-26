@@ -28,6 +28,12 @@ pathadd() {
     fi
 }
 
+pathpreadd() {
+    if [[ -d $1 && ! ":$PATH:" =~ ":$1:" ]]; then
+        export PATH="$1${PATH:+":$PATH"}"
+    fi
+}
+
 ldlibpathadd() {
     if [[ -d $1 && ! ":$LD_LIBRARY_PATH:" =~ ":$1:" ]]; then
         export LD_LIBRARY_PATH="${LD_LIBRARY_PATH:+"$LD_LIBRARY_PATH:"}$1"
