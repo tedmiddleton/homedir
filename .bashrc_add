@@ -57,7 +57,7 @@ alias la='ls -laF'
 alias rm='rm -i'
 alias grep='grep --color'
 alias grepc='grep --color=always'
-alias less='less -R'
+alias less='less -Ri'
 alias bc='bc -l'
 
 # .inputrc will do this, but later, and key-bindings.bash depends on this
