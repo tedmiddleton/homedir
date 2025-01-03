@@ -104,10 +104,14 @@ local function find_file_in_parent_dirs(filename)
 
   --print("Starting the search for compile_commands.json at: " .. dir)
   while dir ~= "/" do
-    local compile_commands_path = dir .. "/" .. filename
-    --print("Checking for compile_commands.json at: " .. compile_commands_path)
-    if vim.fn.filereadable(compile_commands_path) == 1 then
-      --print("Found compile_commands.json at: " .. compile_commands_path)
+    local path = dir .. "/" .. filename
+    --print("Checking for compile_commands.json at: " .. path)
+    if vim.fn.filereadable(path) == 1 then
+      --print("Found compile_commands.json at: " .. path)
+      return dir
+    end
+    if vim.fn.isdirectory(path) == 1 then
+      --print("Found compile_commands.json at: " .. path)
       return dir
     end
     -- Move up one directory
@@ -129,6 +133,12 @@ local function find_project_root()
   local cmake_path = find_file_in_parent_dirs("CMakeLists.txt")
   if cmake_path ~= nil then
     return cmake_path
+  end
+
+  -- A .git directory is a good indicator of a project root
+  local git_path = find_file_in_parent_dirs(".git")
+  if git_path ~= nil then
+    return git_path
   end
 
   -- We couldn't find either so we'll just return the current directory
