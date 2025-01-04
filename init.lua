@@ -79,6 +79,10 @@ local on_attach = function(client, bufnr)
   vim.keymap.set("n", "<space>q", vim.diagnostic.setloclist, opt)
   vim.keymap.set("n", "<space>f", vim.lsp.buf.format, opt)
 
+  -- It's just too much
+  if client.name == 'basedpyright' then
+    vim.diagnostic.config({ virtual_text = false })
+  end
   -- TODO
   -- beginning of function
   -- end of function
@@ -88,7 +92,7 @@ end
 
 -- Use a loop to conveniently call 'setup' on multiple servers and
 -- map buffer local keybindings when the language server attaches
-local servers = { 'clangd' }
+local servers = { 'clangd', 'basedpyright' }
 for _, lsp in ipairs(servers) do
   nvim_lsp[lsp].setup {
     on_attach = on_attach,
