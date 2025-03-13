@@ -38,10 +38,24 @@ require('packer').startup(
     use 'sbdchd/neoformat'
     use 'p00f/clangd_extensions.nvim'
     use 'github/copilot.vim'
+    use 'echasnovski/mini.pairs'
+    use 'folke/ts-comments.nvim'
+    use 'echasnovski/mini.ai'
+    use 'MagicDuck/grug-far.nvim'
+    use {
+        'nvim-treesitter/nvim-treesitter',
+        run = function()
+            local ts_update = require('nvim-treesitter.install').update({ with_sync = true })
+            ts_update()
+        end,
+    }
 
     -- Add other plugins as you like
   end
 )
+
+require('grug-far').setup()
+require('mini.pairs').setup()
 
 local nvim_lsp = require('lspconfig')
 local FzfLua = require('fzf-lua')
@@ -102,6 +116,18 @@ for _, lsp in ipairs(servers) do
   }
 end
 
+-- vim.opt.foldmethod     = 'expr'
+-- vim.opt.foldexpr       = 'nvim_treesitter#foldexpr()'
+---WORKAROUND
+vim.api.nvim_create_autocmd({'BufEnter','BufAdd','BufNew','BufNewFile','BufWinEnter'}, {
+  group = vim.api.nvim_create_augroup('TS_FOLD_WORKAROUND', {}),
+  callback = function()
+    vim.opt.foldmethod     = 'expr'
+    vim.opt.foldexpr       = 'nvim_treesitter#foldexpr()'
+  end
+})
+---ENDWORKAROUND
+
 local function find_file_in_parent_dirs(filename)
   -- Start from the directory of the current file
   local dir = vim.fn.getcwd()
@@ -160,9 +186,20 @@ vim.opt.mouse = "a"
 if not vim.fn.has("nvim") then
 vim.opt.ttymouse = "sgr"
 end
+-- Makes the Tab key (and backspace) feel like it inserts/removes N spaces or 
+-- tabs; if noexpandtab is set, it will use actual tab characters
 vim.opt.softtabstop = 2
+-- Determines the number of spaces (or tabs, if noexpandtab is set) used for 
+-- each level of indentation, e.g., when auto-indenting or using > or < commands
 vim.opt.shiftwidth = 2
+-- expandtab (the default in many distributions) means that each time you press 
+-- the Tab key, Neovim inserts spaces.
+-- noexpandtab ensures pressing Tab inserts a literal \t character
 vim.opt.expandtab = true
+-- Sets the width (in spaces) that a tab character occupies. This is purely 
+-- visual and does not change how files are saved—tabs will still be tabs, but 
+-- displayed as if they were N spaces wide.
+vim.opt.tabstop = 8
 vim.opt.number = true
 vim.opt.hidden = true
 vim.opt.ignorecase = true
