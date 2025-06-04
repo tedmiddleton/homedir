@@ -94,3 +94,12 @@ done
 #    setxkbmap -layout us -option ctrl:nocaps
 #fi
 
+# If the openai key exists, get it
+if [[ -f "$HOME/.openai" ]]; then
+  while IFS='=' read -r key value; do
+    if [[ "$key" == "OPENAI_API_KEY" ]]; then
+      export OPENAI_API_KEY="$value"
+    fi
+  done < "$HOME/.openai"
+fi
+  
