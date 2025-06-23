@@ -97,4 +97,11 @@ if [[ -f "$HOME/.openai" ]]; then
     fi
   done < "$HOME/.openai"
 fi
+if [[ -f "$HOME/.anthropic" ]]; then
+  while IFS='=' read -r key value; do
+    if [[ "$key" == "ANTHROPIC_API_KEY" ]]; then
+      export ANTHROPIC_API_KEY="$value"
+    fi
+  done < "$HOME/.anthropic"
+fi
   
