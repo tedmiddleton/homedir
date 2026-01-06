@@ -1,5 +1,2 @@
-
-if [[ -f ${HOME}/homedir/shellutils ]]; then
-    source ${HOME}/homedir/shellutils
-fi
+[[ -f "$HOME/homedir/shellutils" ]] && source "$HOME/homedir/shellutils"
 
