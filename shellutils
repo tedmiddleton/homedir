@@ -16,6 +16,7 @@ fi
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
 HISTSIZE=1000
 HISTFILESIZE=2000
+PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; history -c; history -r"
 
 pathadd() {
     if [[ -d $1 && ! ":$PATH:" =~ ":$1:" ]]; then

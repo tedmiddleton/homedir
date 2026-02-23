@@ -1,6 +1,6 @@
 echo "FIX THIS - new file is shellutils"
 
-if [[ -f ${HOME}/homedir/shellutils ]]; then
-    source ${HOME}/homedir/shellutils
+if [[ -f "${HOME}/homedir/shellutils" ]]; then
+    source "${HOME}/homedir/shellutils"
 fi
 
