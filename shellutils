@@ -1,22 +1,20 @@
-export BASH_SILENCE_DEPRECATION_WARNING=1
+[[ -n "$BASH_VERSION" ]] && export BASH_SILENCE_DEPRECATION_WARNING=1
 
-# don't put duplicate lines or lines starting with space in the history.
-# See bash(1) for more options
-HISTCONTROL=ignoreboth
-
-# append to the history file, don't overwrite it
 if [[ -n "$BASH_VERSION" ]]; then
+    HISTCONTROL=ignoreboth
+    HISTFILESIZE=2000
     shopt -s histappend
     shopt -s extglob
 elif [[ -n "$ZSH_VERSION" ]]; then
-    # Enable case-insensitive tab completion
+    setopt HIST_IGNORE_DUPS HIST_IGNORE_SPACE APPEND_HISTORY SHARE_HISTORY
+    SAVEHIST=2000
     zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
 fi
+HISTSIZE=1000  # shared variable, works in both
 
-# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=1000
-HISTFILESIZE=2000
-PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; history -c; history -r"
+if [[ -n "$BASH_VERSION" ]]; then
+    PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; history -c; history -r"
+fi
 
 pathadd() {
     if [[ -d $1 && ! ":$PATH:" =~ ":$1:" ]]; then
@@ -64,33 +62,48 @@ alias grepc='grep --color=always'
 alias less='less -Ri'
 alias bc='bc -l'
 
+
 # .inputrc will do this, but later, and key-bindings.bash depends on this
 set -o vi
 
-# Completions (bash, fzf, git, ...)
 
-# Fedora/Red Hat
-fzf_file=/usr/share/fzf/shell/key-bindings.bash
-[[ -f ${fzf_file} ]] && source ${fzf_file}
+# Completions and keybindings (bash, fzf, git, ...)
+if [[ -n "$BASH_VERSION" ]]; then
 
-# Debian
-fzf_file=/usr/share/doc/fzf/examples/key-bindings.bash
-[[ -f ${fzf_file} ]] && source ${fzf_file}
-fzf_file=/usr/share/doc/fzf/examples/completion.bash
-[[ -f ${fzf_file} ]] && source ${fzf_file}
+    # fzf
+    if command -v fzf &>/dev/null; then
+        if [[ $(fzf --version 2>/dev/null | cut -d. -f2) -ge 48 ]]; then
+            eval "$(fzf --bash)"
+        else
+            for f in /usr/share/fzf/shell/key-bindings.bash \
+                     /usr/share/doc/fzf/examples/key-bindings.bash; do
+                [[ -f "$f" ]] && source "$f" && break
+            done
+            [[ -f /usr/share/doc/fzf/examples/completion.bash ]] && \
+                source /usr/share/doc/fzf/examples/completion.bash
+        fi
+    fi
 
-# Homebrew 
-# note - make sure to link fzf files in this dir because brew doesn't do that by 
-# default
-for file in /opt/homebrew/etc/bash_completion.d/*; do
-    [[ -f "$file" ]] && source "$file"
-done
+    # everything else
+    for file in /opt/homebrew/etc/bash_completion.d/*; do
+        [[ -f "$file" ]] && source "$file"
+    done
 
-# This is here so that x11 apps get the same good keyboard remapping as 
-# civilized parts of the OS
-#if command setxkbmap &> /dev/null; then
-#    setxkbmap -layout us -option ctrl:nocaps
-#fi
+elif [[ -n "$ZSH_VERSION" ]]; then
+
+    # fzf - we know we'll never have an old version
+    command -v fzf &>/dev/null && source <(fzf --zsh)
+
+    # everything else
+    fpath=(/opt/homebrew/share/zsh/site-functions $fpath)
+    autoload -Uz compinit
+    if [[ -n ${ZDOTDIR:-$HOME}/.zcompdump(#qN.mh+24) ]]; then
+        compinit
+    else
+        compinit -C
+    fi
+fi
+
 
 # If the openai key exists, get it
 if [[ -f "$HOME/.openai" ]]; then
@@ -100,6 +113,8 @@ if [[ -f "$HOME/.openai" ]]; then
     fi
   done < "$HOME/.openai"
 fi
+
+
 if [[ -f "$HOME/.anthropic" ]]; then
   while IFS='=' read -r key value; do
     if [[ "$key" == "ANTHROPIC_API_KEY" ]]; then
@@ -108,3 +123,33 @@ if [[ -f "$HOME/.anthropic" ]]; then
   done < "$HOME/.anthropic"
 fi
   
+# zsh equivalents of having an .inputrc, which we don't because zsh doesn't use
+# libreadline.
+
+if [[ -n "$ZSH_VERSION" ]]; then
+
+    # set bell-style none
+    unsetopt BEEP
+
+    # set completion-ignore-case on
+    zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
+
+    # set show-all-if-ambiguous on  (list completions on first Tab, don't ring
+    # bell)
+    setopt NO_LIST_BEEP
+    zstyle ':completion:*' menu select
+
+    # set show-all-if-unmodified on  (same idea — show list immediately)
+    # Covered by the above; zsh doesn't distinguish these two cases separately.
+
+    # set editing-mode vi
+    # set keymap vi-insert
+    bindkey -v
+
+    # "df": "\e" - typing 'df' in insert mode acts as Escape (switches to normal mode)
+    bindkey -M viins 'df' vi-cmd-mode
+
+fi
+
+
+
